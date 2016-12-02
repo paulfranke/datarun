@@ -53,8 +53,9 @@ function initmap() {
 	function addStations(){
 		console.log("COCOC");
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/stations.json',
+			url : 'http://localhost:8080/datarun/resources/data/railwayStationNodes.geojson',
 			type: "GET",
+			dataType: "json",
 			beforeSend: function(){
 				console.log("before send");
 			},
@@ -65,7 +66,20 @@ function initmap() {
 				console.log("Error %o", e);
 			},
 			success: function( json ){
-				console.log(json); // this will show the info it in firebug console
+				var count = 0;
+				for(var i = 0; i < json.features.length; i++){
+					if (json.features[i].properties.spokeStartIds.length < 3){
+						continue;
+					} else {
+						count++;
+					}
+					console.log("Station: " + count)
+					console.log(" %o" , json.features[i]);
+					L.geoJSON(json.features[i], { 
+						style: myStyle
+					}).addTo(map);
+					
+				}
 
 			}
 		});  			
@@ -80,18 +94,22 @@ function initmap() {
 
 	map.on('click', onMapClick);
 	
-	var geojsonFeature = {
-		    "type": "Feature",
-		    "properties": {
-		        "name": "Coors Field",
-		        "amenity": "Tomate",
-		        "popupContent": "This is where the Rockies play!"
-		    },
-		    "geometry": {
-		        "type": "Point",
-		        "coordinates": [ 52.4508, 13.11]
-		    }
+	
+	var myLines = [{
+	    "type": "LineString",
+	    "coordinates": [[50, 13], [52.4508, 13.11], [53, 14]]
+	}, {
+	    "type": "LineString",
+	    "coordinates": [[50.1, 13.1], [52.4508, 13.11], [52.4, 13.5]]
+	}];
+	
+	var myStyle = {
+		    "color": "#FF0000",
+		    "weight": 500,
+		    "opacity": 0
 		};
 	
-	L.geoJSON(geojsonFeature).addTo(map);
+	L.geoJSON(myLines, {
+		style: myStyle
+	}).addTo(map);
 }
