@@ -12,6 +12,7 @@ var ajaxRequest;
 var plotlist;
 var plotlayers=[];
 
+
 function initmap() {
 	// set up the map
 	map = new L.Map('map');
@@ -45,6 +46,30 @@ function initmap() {
 	map.on('click', onMapClick);
 	
 	var popup = L.popup();
+	
+	console.log("XOXO");
+	
+	addStations();
+	function addStations(){
+		console.log("COCOC");
+		$.ajax({
+			url : 'http://localhost:8080/datarun/resources/data/stations.json',
+			type: "GET",
+			beforeSend: function(){
+				console.log("before send");
+			},
+			complete: function(){
+				console.log("after send");
+			},	
+			error: function(e){
+				console.log("Error %o", e);
+			},
+			success: function( json ){
+				console.log(json); // this will show the info it in firebug console
+
+			}
+		});  			
+	}
 
 	function onMapClick(e) {
 	    popup
