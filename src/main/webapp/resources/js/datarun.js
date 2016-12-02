@@ -24,42 +24,42 @@ function initmap() {
 	var popupAnchor = '16,8'
 	
 	var railwayPurple = L.icon({
-	    iconUrl: 'resources/img/railway_icon/railway-station-16-purple.png',
+	    iconUrl: 'resources/img/railway_icon/railway-station-24-purple.png',
 	    iconSize:     [iconSize], // size of the icon
 	    iconAnchor:   [iconAnchor], // point of the icon which will correspond to marker's location
 	    popupAnchor:  [popupAnchor] // point from which the popup should open relative to the iconAnchor
 	});	
 
 	var railwayRed = L.icon({
-	    iconUrl: 'resources/img/railway_icon/railway-station-16-red.png',
+	    iconUrl: 'resources/img/railway_icon/railway-station-24-red.png',
 	    iconSize:     [iconSize], // size of the icon
 	    iconAnchor:   [iconAnchor], // point of the icon which will correspond to marker's location
 	    popupAnchor:  [popupAnchor] // point from which the popup should open relative to the iconAnchor
 	});
 	
 	var railwayLightBlue = L.icon({
-	    iconUrl: 'resources/img/railway_icon/railway-station-16-light-blue.png',
+	    iconUrl: 'resources/img/railway_icon/railway-station-24-light-blue.png',
 	    iconSize:     [iconSize], // size of the icon
 	    iconAnchor:   [iconAnchor], // point of the icon which will correspond to marker's location
 	    popupAnchor:  [popupAnchor] // point from which the popup should open relative to the iconAnchor
 	});
 	
 	var railwayOrange = L.icon({
-	    iconUrl: 'resources/img/railway_icon/railway-station-16-orange.png',
+	    iconUrl: 'resources/img/railway_icon/railway-station-24-orange.png',
 	    iconSize:     [iconSize], // size of the icon
 	    iconAnchor:   [iconAnchor], // point of the icon which will correspond to marker's location
 	    popupAnchor:  [popupAnchor] // point from which the popup should open relative to the iconAnchor
 	});	
 	
 	var railwayBlue = L.icon({
-	    iconUrl: 'resources/img/railway_icon/railway-station-16-blue.png',
+	    iconUrl: 'resources/img/railway_icon/railway-station-24-blue.png',
 	    iconSize:     [iconSize], // size of the icon
 	    iconAnchor:   [iconAnchor], // point of the icon which will correspond to marker's location
 	    popupAnchor:  [popupAnchor] // point from which the popup should open relative to the iconAnchor
 	});		
 
 	var railwayGreen = L.icon({
-	    iconUrl: 'resources/img/railway_icon/railway-station-16-green.png',
+	    iconUrl: 'resources/img/railway_icon/railway-station-24-green.png',
 	    iconSize:     [30,30], // size of the icon
 	    iconAnchor:   [10,10], // point of the icon which will correspond to marker's location
 	    popupAnchor:  [10,10] // point from which the popup should open relative to the iconAnchor
