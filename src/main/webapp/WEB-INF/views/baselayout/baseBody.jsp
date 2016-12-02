@@ -20,13 +20,16 @@
     <title>Agora</title>
 
 	<!--  CSS -->
-	<link href="<c:url value="/resources/css/agora.css" />" rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/css/datarun.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/bootstrap-3.3.7/css/bootstrap.min.css" />" rel="stylesheet" type="text/css" />
+	
+	<link rel="stylesheet" href="<c:url value="/resources/leaflet/leaflet.css"/>" />
 
 	<!-- JS -->
 	<script src="<c:url value="/resources/js/jquery-3.1.0.min.js" />"></script>
 	<script src="<c:url value="/resources/bootstrap-3.3.7/js/bootstrap.min.js" />"></script>	
-
+	<script src="<c:url value="/resources/leaflet/leaflet.js" />"></script>	
+	<script src="<c:url value="/resources/js/datarun.js" />"></script>	
 		
 </head>
 	

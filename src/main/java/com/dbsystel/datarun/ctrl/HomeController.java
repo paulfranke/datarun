@@ -24,12 +24,12 @@ public class HomeController {
 	}
 
 	
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@RequestMapping(value = "/map", method = RequestMethod.GET)
 	public String test(Locale locale, Model model) {
 		
 		logger.info("data run");
 
-		return "demo";
+		return "map";
 	}
 	
 }

@@ -22,6 +22,8 @@
 	</definition>	 
    
 
-	<definition name="demo" template="/WEB-INF/views/map/demo.jsp"></definition>	    	
+	<definition name="map" extends="baseLayout">
+	 	<put-attribute name="content" value="/WEB-INF/views/map/demo.jsp"/>
+	</definition>	 
    
 </tiles-definitions>
