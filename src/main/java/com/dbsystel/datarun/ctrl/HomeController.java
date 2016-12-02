@@ -29,7 +29,7 @@ public class HomeController {
 		
 		logger.info("data run");
 
-		return "nodeCreate";
+		return "demo";
 	}
 	
 }
