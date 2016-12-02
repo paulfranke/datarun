@@ -26,7 +26,7 @@ import org.springframework.web.servlet.view.tiles3.TilesView;
 @EnableWebMvc
 @EnableScheduling 
 @EnableAsync
-@ComponentScan(basePackages = {"com.dbsystel.agora.ctrl","com.dbsystel.agora.service","com.dbsystel.agora.dao"})
+@ComponentScan(basePackages = {"com.dbsystel.datarun.ctrl","com.dbsystel.datarun.service","com.dbsystel.datarun.dao"})
 @Configuration
 public class DataRunConfiguration extends WebMvcConfigurerAdapter {
 
