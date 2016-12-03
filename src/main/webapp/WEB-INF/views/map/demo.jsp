@@ -63,6 +63,10 @@
 			<button type="button" class="btn btn-success" id="jsBtnStart">Start</button>
 		</label>
 		
+		<hr />
+		
+		<p id="jsCurrentDate"></p>
+		
 	</div>
 	
 </div>

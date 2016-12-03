@@ -23,15 +23,15 @@ function initmap() {
 	
 	
 	// start the map in South-East England
-	map.setView(new L.LatLng(52.5, 13.3),12);
+	map.setView(new L.LatLng(52.521918, 13.413215),13);
 	map.addLayer(osm);
 	
-	var circle = L.circle([51.508, -0.11], {
-	    color: 'red',
-	    fillColor: '#f03',
-	    fillOpacity: 0.5,
-	    radius: 500
-	}).addTo(map);
+//	var circle = L.circle([51.508, -0.11], {
+//	    color: 'red',
+//	    fillColor: '#f03',
+//	    fillOpacity: 0.5,
+//	    radius: 500
+//	}).addTo(map);
 	
 	
 //	//railway station markers
@@ -285,10 +285,11 @@ function initmap() {
 	
 	$("#jsBtnSearch").on("click", getGeoCodeByAdress)
 
+	var stationMarkers = [];
+	
 	addStations();
 	
-
-	
+		
 	function addStations(){
 		
 		$.ajax({
@@ -313,6 +314,9 @@ function initmap() {
 						var stationName = json[i].ZONE;
 						
 						var marker = L.marker([lng, lat]).bindPopup( stationName ).addTo(map);
+						marker._icon.id = lat;
+
+						stationMarkers[lat] = marker
 					}
 				}
 	
@@ -534,6 +538,10 @@ function initmap() {
 	}
 	
 
+	var json = "";
+	var i=0;
+	var dateArr = [];
+	
 	//readInOut();
 	function readInOut( dateArr ){
 		
@@ -552,29 +560,93 @@ function initmap() {
 			error: function(e){
 				console.log("Error %o", e);
 			},
-			success: function( json ){
-
-				for(var i=0;i<dateArr.length;i++){
-
-					setTimeout(function(){  
-
-						for(var j = 0;j < json.length; j++){
-							if(json[j].date == dateArr[i]){
-								var stationLat = json[i].LAT;
-								var stationLng = json[i].LON;
-								var stationDiff = json[i].diff;
-								
-								console.log("DATE: " + dateArr[i] + " Diff: " + stationDiff)
-							}
-						}
-
-					 
-					 }, 1200);
-					
-				}
+			success: function( _json ){
+				
+				json = _json
+//				for(var i=0;i<dateArr.length;i++){
+//					
+//				}
+				callme();
+				
 			}
 		});				
 		
+	}
+
+	
+	function callme( ){
+
+		console.log("CALL ME")
+		if(i == 30){
+			return false;
+		}
+
+		$("#jsCurrentDate").html( dateArr[i] );
+		
+		for(var j = 0;j < json.length; j++){
+			if(json[j].date == dateArr[i]){
+				var stationLat = json[j].LAT.replace(",",".");
+				var stationLng = json[j].LON.replace(",",".");
+				var stationDiff = json[j].diff;
+				var stationDep = json[j].count_departures;
+				
+				if(jQuery.inArray( stationLat, stationMarkers )){
+					stationMarkers[stationLat].remove();
+					delete stationMarkers[ stationLat ];
+					
+					var marker = L.marker([stationLng, stationLat]).addTo(map);
+					if(stationDep > 0){
+						
+						var color = "#F6CED8";
+						if(stationDep < 5){
+							color = "#F6CED8";	
+						}else if(stationDep < 10){
+							color = "#F6CED8";	
+						}else if(stationDep < 20){
+							color = "#F6CED8";	
+						}else{
+							color = "#F6CED8";	
+						}
+							
+						}
+						
+						marker.valueOf()._icon.style.backgroundColor = 'red';
+					}else{
+						marker.valueOf()._icon.style.backgroundColor = '';
+					}
+					stationMarkers[stationLat] = marker
+					
+				}
+				
+				console.log("LOOP" + stationLat)
+				
+//				for(var i=1; i<stationMarkers.length; i++){
+//					if(stationMarkers[i]._latlng.lng == stationLng){
+//						stationMarkers[i].remove();
+//
+//						var marker = L.marker([stationLng, stationLat]).addTo(map);
+//						marker.valueOf()._icon.style.backgroundColor = 'red'
+//							
+//						stationMarkers[stationLat] = marker
+//					
+//					}
+//				}
+
+
+//				console.log("LAT: " + stationLat )
+//				
+//				map.removeLayer(L.marker([stationLng, stationLat]).addTo(map));
+//				
+//				$("#" + stationLat).remove();
+//				console.log(" REMOVE ")
+
+				
+			}
+		}
+		
+		i++
+	    
+	    setTimeout(callme, 1100);
 	}
 	
 
@@ -584,8 +656,6 @@ function initmap() {
 	  
 	  
 	  function startVideo(){
-		  
-		  var dateArr = [];
 		  
 		  var inpDate = $("#datepicker").val();
 		  var year = inpDate.substring(6,10);
