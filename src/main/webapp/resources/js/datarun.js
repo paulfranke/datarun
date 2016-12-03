@@ -104,7 +104,7 @@ function initmap() {
 //
 //		
 //		$.ajax({
-//			url : 'http://localhost:8080/datarun/resources/data/railwayStationNodes.geojson',
+//			url : 'http://172.16.41.174:8080/datarun/resources/data/railwayStationNodes.geojson',
 //			type: "GET",
 //			dataType: "json",
 //			beforeSend: function(){
@@ -179,7 +179,7 @@ function initmap() {
 //		var alreadyAddedStation = [];
 //
 //		$.ajax({
-//			url : 'http://localhost:8080/datarun/resources/data/railwayLines.geojson',
+//			url : 'http://172.16.41.174:8080/datarun/resources/data/railwayLines.geojson',
 //			type: "GET",
 //			dataType: "json",
 //			beforeSend: function(){
@@ -293,7 +293,7 @@ function initmap() {
 	function addStations(){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/BikeStationen.json',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/BikeStationen.json',
 			type: "GET",
 			dataType: "json",
 			beforeSend: function(){
@@ -329,7 +329,7 @@ function initmap() {
 	function addUsers( districtGeoJson, userAges ){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/berlin_user.json',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/berlin_user.json',
 			type: "GET",
 			dataType: "json",
 			beforeSend: function(){
@@ -452,7 +452,7 @@ function initmap() {
 		// obj = {"district":user.district,"users":totalUsers,"lat":lat,"lng":lng}
 
 			$.ajax({
-				url : 'http://localhost:8080/datarun/resources/data/berlin_district.geojson',
+				url : 'http://172.16.41.174:8080/datarun/resources/data/berlin_district.geojson',
 				type: "GET",
 				dataType: "json",
 				data:{
@@ -506,7 +506,7 @@ function initmap() {
 	function addCycleTour( _name, _fillColor ){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/radtour_' + _name + '.geojson',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/radtour_' + _name + '.geojson',
 			type: "GET",
 			dataType: "json",
 			data:{
@@ -546,7 +546,7 @@ function initmap() {
 	function readInOut( dateArr ){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/BikeInOut.json',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/BikeInOut.json',
 			type: "GET",
 			dataType: "json",
 			data:{
@@ -601,16 +601,14 @@ function initmap() {
 						if(stationDep < 5){
 							color = "#F6CED8";	
 						}else if(stationDep < 10){
-							color = "#F6CED8";	
+							color = "#FE2E64";	
 						}else if(stationDep < 20){
-							color = "#F6CED8";	
+							color = "#DF013A";	
 						}else{
-							color = "#F6CED8";	
-						}
-							
+							color = "##8A0829";	
 						}
 						
-						marker.valueOf()._icon.style.backgroundColor = 'red';
+						marker.valueOf()._icon.style.backgroundColor = color;
 					}else{
 						marker.valueOf()._icon.style.backgroundColor = '';
 					}
@@ -618,7 +616,6 @@ function initmap() {
 					
 				}
 				
-				console.log("LOOP" + stationLat)
 				
 //				for(var i=1; i<stationMarkers.length; i++){
 //					if(stationMarkers[i]._latlng.lng == stationLng){
