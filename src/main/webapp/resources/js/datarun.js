@@ -538,7 +538,7 @@ function initmap() {
 	function readInOut( date ){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/inOut.json',
+			url : 'http://localhost:8080/datarun/resources/data/BikeInOut.json',
 			type: "GET",
 			dataType: "json",
 			data:{
@@ -553,17 +553,20 @@ function initmap() {
 				console.log("Error %o", e);
 			},
 			success: function( json ){
-				
-				if(typeof json == 'object'){
-					for(var i=0;i<json.inOut.length;i++){
-						if(json.inOut[i].date == date){
-							
-							var stationLat = jsonInOut[i].lat;
-							var stationLng = jsonInOut[i].lng;
-							var stationDiff = jsonInOut[i].diff;
-							
-							console.log("DATE: " + date + " Diff: " + stationDiff)
-						}
+				console.log(" %o", json);
+				return false;
+				console.log("aslkdjfbb");
+				for(var i = 0;i < json.length; i++){
+					console.log("jsondate " + json[i].date);
+					console.log("    date " + date);
+					if(json[i].date == (date)){
+						console.log("XOXOX" + i)
+						
+						var stationLat = json[i].LAT;
+						var stationLng = json[i].LON;
+						var stationDiff = json[i].diff;
+						
+						console.log("DATE: " + date + " Diff: " + stationDiff)
 					}
 				}
 			}
@@ -587,7 +590,9 @@ function initmap() {
 		  
 		  for(var i=0;i<2;i++){
 			  date.setDate(date.getDate() + 1);
-			  var newDate = ("0" + (date.getDate() )).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear();
+			  var newDate = date.getFullYear() + "-" 
+			  			  + ("0" + (date.getMonth() + 1)).slice(-2) + "-" 
+			  		      + ("0" + (date.getDate() )).slice(-2);
 			  
 			  setTimeout(function(){ readInOut( newDate ) }, 1000);
 			  

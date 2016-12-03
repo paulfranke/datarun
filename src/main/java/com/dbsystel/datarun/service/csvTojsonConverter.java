@@ -14,14 +14,15 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import com.dbsystel.datarun.model.BikeInOut;
 import com.dbsystel.datarun.model.BikeStation;
 import com.dbsystel.datarun.model.Station;
 import com.google.gson.Gson;
 
 public class csvTojsonConverter {
-	char inDelimiter = ';';
+	char inDelimiter = ',';
 //	String[] dataHeader = {"BST8", "BST_NAME", "LAND", "LAT", "LON"};
-	String[] dataHeader = {"RENTAL_ZONE_HAL_ID", 
+	String[] dataBikeHeader = {"RENTAL_ZONE_HAL_ID", 
 						   "RENTAL_ZONE_HAL_SRC",
 						   "NAME",
 						   "TYPE",
@@ -41,6 +42,18 @@ public class csvTojsonConverter {
 						   "RENTAL_ZONE_GROUP_X",
 						   "RENTAL_ZONE_X_COORDINATE",
 						   "RENTAL_ZONE_Y_COORDINATE"};
+	
+	String[] dataInOutHeader = {"",
+								"date",
+							    "RENTAL_ZONE",
+							    "year",
+							    "dayofyear",
+							    "count_arrivals",
+							    "count_departures",
+							    "diff",
+							    "RENTAL_ZONE_X_COORDINATE",
+							    "RENTAL_ZONE_Y_COORDINATE"};
+	
 
 	public final static Charset ENCODING = StandardCharsets.UTF_8;
 	
@@ -54,11 +67,11 @@ public class csvTojsonConverter {
 			CSVRecord record = inList.get(i);
 			
 			Station x = new Station();
-			x.setRecordId(record.get(dataHeader[0]));
-			x.setRecordLand(record.get(dataHeader[1]));
-			x.setRecordName(record.get(dataHeader[2]));
-			x.setRecordLat(record.get(dataHeader[3]));
-			x.setRecordLon(record.get(dataHeader[4]));
+			x.setRecordId(record.get(dataBikeHeader[0]));
+			x.setRecordLand(record.get(dataBikeHeader[1]));
+			x.setRecordName(record.get(dataBikeHeader[2]));
+			x.setRecordLat(record.get(dataBikeHeader[3]));
+			x.setRecordLon(record.get(dataBikeHeader[4]));
 			outList.add(x);
 
 			System.out.println("RecordNumber " + i + " extracted.");
@@ -83,24 +96,37 @@ public class csvTojsonConverter {
 		
 	}
 
-	public void createBikejson(String filePath){
+
+	public void createInOutJson(String filePath){
 		List<CSVRecord> inList = importFile(filePath);
 		Path path = Paths.get(filePath);
 		
-		List<BikeStation> outList = new ArrayList<BikeStation>();
-		System.out.println("XOXO test");
+		List<BikeInOut> outList = new ArrayList<BikeInOut>();
+		System.out.println("XOXO InOut");
 		for (int i = 1; i < inList.size(); i++){
 			CSVRecord record = inList.get(i);
+//			
+//			"date",
+//		    "RENTAL_ZONE",
+//		    "year",
+//		    "dayofyear",
+//		    "count_arrivals",
+//		    "count_departures",
+//		    "diff,RENTAL_ZONE_X_COORDINATE",
+//		    "RENTAL_ZONE_Y_COORDINATE"};
 			
-			BikeStation x = new BikeStation();
-			x.setCITY(record.get(dataHeader[4]));
-			x.setGROUP(record.get(dataHeader[17]));
-			x.setID(record.get(dataHeader[0]));
-			x.setZONE(record.get(dataHeader[11]));
-			x.setLAT(record.get(dataHeader[18]));
-			x.setLON(record.get(dataHeader[19]));
+			BikeInOut x = new BikeInOut();
+			x.setDate(record.get(dataInOutHeader[1]));
+			x.setRENTAL_ZONE(record.get(dataInOutHeader[2]));
+			x.setYear(record.get(dataInOutHeader[3]));
+			x.setDayofyear(record.get(dataInOutHeader[4]));
+			x.setCount_arrivals(record.get(dataInOutHeader[5]));
+			x.setCount_departures(record.get(dataInOutHeader[6]));
+			x.setDiff(record.get(dataInOutHeader[7]));
+			x.setLAT(record.get(dataInOutHeader[8]));
+			x.setLON(record.get(dataInOutHeader[9]));
 			outList.add(x);
-
+			
 			System.out.println("RecordNumber " + i + " extracted.");
 			
 		}
@@ -109,9 +135,9 @@ public class csvTojsonConverter {
 		String outjson = y.toJson(outList);
 		System.out.println(y.toString());
 		try {
-			createFile(new File(path.getParent() + "\\BikeStationen.json"));
+			createFile(new File(path.getParent() + "\\BikeInOut.json"));
 			FileWriter fileWriter
-					= new FileWriter(path.getParent() + "\\BikeStationen.json");
+			= new FileWriter(path.getParent() + "\\BikeInOut.json");
 			fileWriter.write(outjson);
 			fileWriter.flush();
 			fileWriter.close();
@@ -122,7 +148,6 @@ public class csvTojsonConverter {
 		
 		
 	}
-
 	private List<CSVRecord> importFile(String filePath){
 		
 		File inFile = new File(filePath);
@@ -130,7 +155,7 @@ public class csvTojsonConverter {
 		try{
 			CSVFormat inFormat = CSVFormat.DEFAULT
 								.withDelimiter(inDelimiter)
-								.withHeader(dataHeader);
+								.withHeader(dataInOutHeader);
 			
 			CSVParser parse = CSVParser.parse(inFile, ENCODING, inFormat);
 			inList = parse.getRecords();
