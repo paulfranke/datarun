@@ -420,7 +420,7 @@ function initmap() {
 							        opacity: 1,
 							        color: 'white',
 							        dashArray: '6',
-							        fillOpacity: 0.7}}).addTo(map);
+							        fillOpacity: 0.7}}).bindPopup( user.district + " (" + totalUsers + ")" ).addTo(map);
 								
 									break;	
 							}								
@@ -487,6 +487,50 @@ function initmap() {
 
 	$(document).on("change", ".jsUserAge", updateDrawByUserAge)
 	
+	
+	setTimeout(function(){ addCycleTour("gatow", '#C0392B'); }, 2000);
+	setTimeout(function(){ addCycleTour("wannsee",'#943126'); }, 2000);
+	setTimeout(function(){ addCycleTour("hellersdorf",'#E74C3C'); }, 2000);
+	setTimeout(function(){ addCycleTour("hohenschoenhausen",'#F1948A'); }, 2000);
+	setTimeout(function(){ addCycleTour("nordspanne",'#7B241C'); }, 2000);
+	setTimeout(function(){ addCycleTour("reinickendorf",'#C0392B'); }, 2000);
+	setTimeout(function(){ addCycleTour("spandau", '#E74C3C'); }, 2000);
+	setTimeout(function(){ addCycleTour("suedspange", '#F1948A'); }, 2000);
+	setTimeout(function(){ addCycleTour("teltow", '#943126'); }, 2000);
+	
+	function addCycleTour( _name, _fillColor ){
+		
+		$.ajax({
+			url : 'http://localhost:8080/datarun/resources/data/radtour_' + _name + '.geojson',
+			type: "GET",
+			dataType: "json",
+			data:{
+			},
+			beforeSend: function(){
+
+			},
+			complete: function(){
+				
+			},	
+			error: function(e){
+				console.log("Error %o", e);
+			},
+			success: function( json ){
+				
+				for(var i=0;i<json.features.length;i++){
+					
+					var polyline = L.geoJSON(json.features[i], {style: {        
+						fillColor: _fillColor,
+				        weight: 3,
+				        opacity: 1,
+				        color: 'red',
+				        dashArray: '5',
+				        fillOpacity: 0}}).bindPopup( "Tour: " + json.features[i].properties.name ).bringToFront().addTo(map).openPopup();
+				}
+			}
+		});		
+		
+	}
 	
 }
 

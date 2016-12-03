@@ -1,1 +1,3 @@
 http://blog.martinrank.de/wp-content/uploads/2015/12/ortsteile_von_berlin_bevoelkerungsdichte.txt
+https://daten.berlin.de/datensaetze/einwohnerinnen-und-einwohner-den-ortsteilen-berlins-am-30062016
+http://www.stadtentwicklung.berlin.de/verkehr/mobil/fahrrad/radrouten/de/gps_tracks/index.shtml
