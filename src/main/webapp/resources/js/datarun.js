@@ -21,10 +21,10 @@ function initmap() {
 	//railway station markers
 	var iconSize = '16,16'
 	var iconAnchor = '8,8'
-	var popupAnchor = '16,8'
+	var popupAnchor = '8,8'
 	
 	var railwayPurple = L.icon({
-	    iconUrl: 'resources/img/railway_icon/railway-station-24-purple.png',
+	    iconUrl: 'resources/img/railway_icon/railway-station-24-purble.png',
 	    iconSize:     [iconSize], // size of the icon
 	    iconAnchor:   [iconAnchor], // point of the icon which will correspond to marker's location
 	    popupAnchor:  [popupAnchor] // point from which the popup should open relative to the iconAnchor
@@ -60,9 +60,9 @@ function initmap() {
 
 	var railwayGreen = L.icon({
 	    iconUrl: 'resources/img/railway_icon/railway-station-24-green.png',
-	    iconSize:     [30,30], // size of the icon
-	    iconAnchor:   [10,10], // point of the icon which will correspond to marker's location
-	    popupAnchor:  [10,10] // point from which the popup should open relative to the iconAnchor
+	    iconSize:     [iconSize], // size of the icon
+	    iconAnchor:   [iconAnchor], // point of the icon which will correspond to marker's location
+	    popupAnchor:  [popupAnchor] // point from which the popup should open relative to the iconAnchor
 	});			
 	
 	// create the tile layer with correct attribution
@@ -75,23 +75,14 @@ function initmap() {
 	map.setView(new L.LatLng(52.5, 13.3),8);
 	map.addLayer(osm);
 	
+	var marker3 = L.marker([51.3, 12.3], {icon: railwayPurple}).addTo(map);
+	marker3.bindPopup("RAMTAMTAM");
+	
 	var marker = L.marker([52.3, 13.3]).addTo(map);
 	
-	var circle = L.circle([52.4508, 13.11], {
-	    color: 'green',
-	    fillColor: '#fff',
-	    fillOpacity: 0.5,
-	    radius: 2000
-	}).addTo(map);
+	marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
 	
-	marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
-	circle.bindPopup("I am a circle.");
 	
-	function onMapClick(e) {
-	    console.log("You clicked the map at " + e.latlng);
-	}
-
-	map.on('click', onMapClick);
 	
 	var popup = L.popup();
 	
@@ -116,38 +107,82 @@ function initmap() {
 			success: function( json ){
 				var count = 0;
 				for(var i = 0; i < json.features.length; i++){
-					if (json.features[i].properties.spokeStartIds.length < 3){
+					var stationCode = json.features[i].properties.railwayStationCode;
+					if(json.features[i].properties.spokeStartIds.length < 4){
 						continue;
-					} else {
-						
-						var stationCode = json.features[i].properties.railwayStationCode;
-						if($.inArray(stationCode,alreadyAddedStation) == -1){
-							var long = json.features[i].geometry.coordinates[0];
-							var lat = json.features[i].geometry.coordinates[1];
-							L.marker([ lat, long ], {icon: railwayRed}).addTo(map);
-							alreadyAddedStation.push( stationCode );
-						}
-						
-						count++;
 					}
-					console.log(" %o" , json.features[i]);
+					
+//					if($.inArray(stationCode,alreadyAddedStation) == -1){
+					if(json.features[i].properties.geographicalName.includes("Hbf")){
+						
+						var long = json.features[i].geometry.coordinates[0];
+						var lat = json.features[i].geometry.coordinates[1];
+						var stationName = json.features[i].properties.geographicalName;
+						
+						var marker2 = L.marker([ lat, long ], {icon: railwayRed}).addTo(map);
+						alreadyAddedStation.push( stationCode );
+						
+						marker2.bindTooltip(stationName)
+						var popup = L.popup().setLatLng([lat,long]).setContent(stationName).openOn(map)
+//						marker2.bindPopup("COCOCO");
+						
+						//set if according to the number ob links 
+						marker2._icon.id = json.features[i].properties.spokeStartIds.length;
+						
+					}
+					
+					if (json.features[i].properties.spokeStartIds.length < 4){
+						//add class hidden
+					}
+					count++;
 				}
+				
 
 			}
-		});  			
+		});		
 	}
 
-	
+	addLines();
+	function addLines(){
+		
+		var alreadyAddedStation = [];
 
-	
-	function onMapClick(e) {
-	    popup
-	        .setLatLng(e.latlng)
-	        .setContent("You clicked the map at " + e.latlng.toString())
-	        .openOn(map);
+		$.ajax({
+			url : 'http://localhost:8080/datarun/resources/data/railwayLines.geojson',
+			type: "GET",
+			dataType: "json",
+			beforeSend: function(){
+				console.log("before send");
+			},
+			complete: function(){
+				console.log("after send");
+			},	
+			error: function(e){
+				console.log("Error %o", e);
+			},
+			success: function( json ){
+				var count = 0;
+//				console.log(' %0', json);
+				for(var i = 0; i < json.features.length; i++){
+					var polyline = L.geoJSON(json.features[i], {color: 'blue'}).addTo(map);
+				}
+				
+
+			}
+		});		
 	}
+	
 
-	map.on('click', onMapClick);
+
+	
+//	function onMapClick(e) {
+//	    popup
+//	        .setLatLng(e.latlng)
+//	        .setContent("You clicked the map at " + e.latlng.toString())
+//	        .openOn(map);
+//	}
+
+//	map.on('click', onMapClick);
 	
 	
 	var myLines = [{
