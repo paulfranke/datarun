@@ -322,7 +322,7 @@ function initmap() {
 	}
 
 	
-	addUsers();
+	//addUsers();
 	function addUsers(){
 		
 		$.ajax({
@@ -378,14 +378,33 @@ function initmap() {
 						var lng = json.results[0].geometry.location.lng;
 						
 						var totalUsers = parseInt(user._10_15) + parseInt(user._15_20) + parseInt(user._20_25) + parseInt(user._25_30) + parseInt(user._30_35) + parseInt(user._35_40) + parseInt(user._40_45) + parseInt(user._45_50) + parseInt(user._50_55) + parseInt(user._55_60) + parseInt(user._60_65);
-						console.log("total:" + totalUsers);
 
-						var circle = L.circle([lat, lng], {
-						    color: 'blue',
-						    fillColor: '#f03',
-						    fillOpacity: 0.5,
-						    radius: 1500
-						}).addTo(map);
+						/*
+						 * set color by total users
+						 */
+						var userColor = '#CEF6D8';
+						if(totalUsers <= 5000){
+							userColor = '#CEF6D8';	
+						}else if(totalUsers <= 10000){
+							userColor = '#81F79F';
+						}else if(totalUsers <= 30000){
+							userColor = '#2EFE64';	
+						}else if(totalUsers <= 70000){
+							userColor = '#01DF74';	
+						}else{
+							userColor = '#088A29';	
+						}
+						
+						var obj = {"district":user.district,"users":totalUsers,"lat":lat,"lng":lng}
+						
+						//drawDistrict(obj)
+						
+//						var circle = L.circle([lat, lng], {
+//						    color: 'blue',
+//						    fillColor: userColor,
+//						    fillOpacity: 0.5,
+//						    radius: 1500
+//						}).bindPopup( user.district + " (" + totalUsers + ")" ).addTo(map);
 						
 						
 					}
@@ -395,6 +414,44 @@ function initmap() {
 		}
 		
 	}	
+	
+	drawDistrict();
+	function drawDistrict(){
+		
+		// obj = {"district":user.district,"users":totalUsers,"lat":lat,"lng":lng}
+
+			$.ajax({
+				url : 'http://localhost:8080/datarun/resources/data/berlin_district.geojson',
+				type: "GET",
+				data:{
+				},
+				beforeSend: function(){
+					console.log("SEND")
+				},
+				complete: function(){
+					console.log("COM")
+				},	
+				error: function(e){
+					console.log("Error %o", e);
+				},
+				success: function( json ){
+					
+						
+					for(var i = 0; i < json.features.length; i++){
+						var polyline = L.geoJSON(json.features[i], {style: {        
+							fillColor: '#E31A1C',
+					        weight: 3,
+					        opacity: 1,
+					        color: 'white',
+					        dashArray: '6',
+					        fillOpacity: 0.7}}).addTo(map);
+					}
+						
+				}
+			});		
+			
+		
+	}		
 	
 	
 	
