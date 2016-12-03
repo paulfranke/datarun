@@ -322,8 +322,7 @@ function initmap() {
 	}
 
 	
-	//addUsers();
-	function addUsers(){
+	function addUsers( districtGeoJson, userAges ){
 		
 		$.ajax({
 			url : 'http://localhost:8080/datarun/resources/data/berlin_user.json',
@@ -338,13 +337,102 @@ function initmap() {
 				console.log("Error %o", e);
 			},
 			success: function( json ){
-				console.log("json %o", json)
-				
+
 				if(typeof json == "object"){
-					for(var i=0;i<json.users.length;i++){
-						var district = json.users[i].district;
+
+					for(var i = 0; i < districtGeoJson.features.length; i++){
 						
-						setUserByAdress(district, json.users[i]);
+						for(var j=0;j<json.users.length;j++){
+							if(json.users[j].district == districtGeoJson.features[i].properties.Ortsteil){
+								
+								var user = json.users[j];
+								var totalUsers = 0;
+								if(typeof userAges == "undefined" || userAges.length == 0 ){
+									totalUsers = parseInt(user._10_15) + parseInt(user._15_20) + parseInt(user._20_25) + parseInt(user._25_30) + parseInt(user._30_35) + parseInt(user._35_40) + parseInt(user._40_45) + parseInt(user._45_50) + parseInt(user._50_55) + parseInt(user._55_60) + parseInt(user._60_65);
+								}else{
+									for(var k=0;k<userAges.length;k++){
+										if(userAges[k] == '_10_15'){
+											totalUsers += parseInt(user._10_15)	
+										}
+
+										if(userAges[k] == '_15_20'){
+											totalUsers += parseInt(user._15_20)	
+										}
+
+										if(userAges[k] == '_20_25'){
+											totalUsers += parseInt(user._20_25)	
+										}
+										
+										if(userAges[k] == '_25_30'){
+											totalUsers += parseInt(user._25_30)	
+										}
+
+										if(userAges[k] == '_30_35'){
+											totalUsers += parseInt(user._30_35)	
+										}
+
+										if(userAges[k] == '_35_40'){
+											totalUsers += parseInt(user._35_40)	
+										}
+
+										if(userAges[k] == '_40_45'){
+											totalUsers += parseInt(user._40_45)	
+										}						
+										
+										if(userAges[k] == '_45_50'){
+											totalUsers += parseInt(user._45_50)	
+										}						
+										
+										if(userAges[k] == '_50_55'){
+											totalUsers += parseInt(user._50_55)	
+										}						
+										
+										if(userAges[k] == '_55_60'){
+											totalUsers += parseInt(user._55_60)	
+										}						
+										
+										if(userAges[k] == '_60_65'){
+											totalUsers += parseInt(user._60_65)	
+										}										
+									}
+								}
+
+								/*
+								 * set color by total users
+								 */
+								var userColor = '#CEF6D8';
+								if(totalUsers <= 5000){
+									userColor = '#CEF6D8';	
+								}else if(totalUsers <= 10000){
+									userColor = '#81F79F';
+								}else if(totalUsers <= 30000){
+									userColor = '#2EFE64';	
+								}else if(totalUsers <= 70000){
+									userColor = '#01DF74';	
+								}else{
+									userColor = '#088A29';	
+								}
+								
+								
+								var polyline = L.geoJSON(districtGeoJson.features[i], {style: {        
+									fillColor: userColor,
+							        weight: 3,
+							        opacity: 1,
+							        color: 'white',
+							        dashArray: '6',
+							        fillOpacity: 0.7}}).addTo(map);
+								
+									break;	
+							}								
+								
+//								var circle = L.circle([lat, lng], {
+//								    color: 'blue',
+//								    fillColor: userColor,
+//								    fillOpacity: 0.5,
+//								    radius: 1500
+//								}).bindPopup( user.district + " (" + totalUsers + ")" ).addTo(map);						
+							
+						}
 					}
 				}
 			}
@@ -353,106 +441,54 @@ function initmap() {
 	}
 	
 
-	function setUserByAdress( adress, user ){
-		
-		if(adress != ''){
-			$.ajax({
-				url : 'http://maps.google.com/maps/api/geocode/json',
-				type: "GET",
-				dataType: "json",
-				data:{
-					'address': adress
-				},
-				beforeSend: function(){
-
-				},
-				complete: function(){
-					
-				},	
-				error: function(e){
-					console.log("Error %o", e);
-				},
-				success: function( json ){
-					if(typeof json === 'object' && json.results.length > 0){
-						var lat = json.results[0].geometry.location.lat;
-						var lng = json.results[0].geometry.location.lng;
-						
-						var totalUsers = parseInt(user._10_15) + parseInt(user._15_20) + parseInt(user._20_25) + parseInt(user._25_30) + parseInt(user._30_35) + parseInt(user._35_40) + parseInt(user._40_45) + parseInt(user._45_50) + parseInt(user._50_55) + parseInt(user._55_60) + parseInt(user._60_65);
-
-						/*
-						 * set color by total users
-						 */
-						var userColor = '#CEF6D8';
-						if(totalUsers <= 5000){
-							userColor = '#CEF6D8';	
-						}else if(totalUsers <= 10000){
-							userColor = '#81F79F';
-						}else if(totalUsers <= 30000){
-							userColor = '#2EFE64';	
-						}else if(totalUsers <= 70000){
-							userColor = '#01DF74';	
-						}else{
-							userColor = '#088A29';	
-						}
-						
-						var obj = {"district":user.district,"users":totalUsers,"lat":lat,"lng":lng}
-						
-						//drawDistrict(obj)
-						
-//						var circle = L.circle([lat, lng], {
-//						    color: 'blue',
-//						    fillColor: userColor,
-//						    fillOpacity: 0.5,
-//						    radius: 1500
-//						}).bindPopup( user.district + " (" + totalUsers + ")" ).addTo(map);
-						
-						
-					}
-				}
-			});		
-			
-		}
-		
-	}	
 	
 	drawDistrict();
-	function drawDistrict(){
+	function drawDistrict( userAges ){
 		
 		// obj = {"district":user.district,"users":totalUsers,"lat":lat,"lng":lng}
 
 			$.ajax({
 				url : 'http://localhost:8080/datarun/resources/data/berlin_district.geojson',
 				type: "GET",
+				dataType: "json",
 				data:{
 				},
 				beforeSend: function(){
-					console.log("SEND")
+
 				},
 				complete: function(){
-					console.log("COM")
+					
 				},	
 				error: function(e){
 					console.log("Error %o", e);
 				},
 				success: function( json ){
 					
-						
-					for(var i = 0; i < json.features.length; i++){
-						var polyline = L.geoJSON(json.features[i], {style: {        
-							fillColor: '#E31A1C',
-					        weight: 3,
-					        opacity: 1,
-					        color: 'white',
-					        dashArray: '6',
-					        fillOpacity: 0.7}}).addTo(map);
-					}
+					addUsers( json, userAges )
 						
 				}
 			});		
 			
 		
 	}		
+
 	
+
+	function updateDrawByUserAge(){
+		
+		var ages =[];
+		 $(".jsUserAge:checked").each(function () {
+		        ages.push($(this).val());
+		 });
+		 
+		 drawDistrict( ages );
+		 
+	}
+
+	$(document).on("change", ".jsUserAge", updateDrawByUserAge)
 	
 	
 }
+
+
+
