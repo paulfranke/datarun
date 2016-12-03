@@ -245,6 +245,9 @@ function initmap() {
 //	    radius: 500
 //	}).addTo(map);			
 	
+
+	
+	/* Call a bike a new try */
 	
 	function getGeoCodeByAdress(){
 			
@@ -284,16 +287,16 @@ function initmap() {
 
 	addStations();
 	
+
+	
 	function addStations(){
 		
-		var alreadyAddedStation = [];
-	
 		$.ajax({
 			url : 'http://localhost:8080/datarun/resources/data/BikeStationen.json',
 			type: "GET",
 			dataType: "json",
 			beforeSend: function(){
-				$("#jsProgressBar").css("width", '10%');
+
 			},
 			complete: function(){
 	
@@ -317,6 +320,82 @@ function initmap() {
 		});		
 	
 	}
+
+	
+	addUsers();
+	function addUsers(){
+		
+		$.ajax({
+			url : 'http://localhost:8080/datarun/resources/data/berlin_user.json',
+			type: "GET",
+			dataType: "json",
+			beforeSend: function(){
+			},
+			complete: function(){
+	
+			},	
+			error: function(e){
+				console.log("Error %o", e);
+			},
+			success: function( json ){
+				console.log("json %o", json)
+				
+				if(typeof json == "object"){
+					for(var i=0;i<json.users.length;i++){
+						var district = json.users[i].district;
+						
+						setUserByAdress(district, json.users[i]);
+					}
+				}
+			}
+		});		
+	
+	}
+	
+
+	function setUserByAdress( adress, user ){
+		
+		if(adress != ''){
+			$.ajax({
+				url : 'http://maps.google.com/maps/api/geocode/json',
+				type: "GET",
+				dataType: "json",
+				data:{
+					'address': adress
+				},
+				beforeSend: function(){
+
+				},
+				complete: function(){
+					
+				},	
+				error: function(e){
+					console.log("Error %o", e);
+				},
+				success: function( json ){
+					if(typeof json === 'object' && json.results.length > 0){
+						var lat = json.results[0].geometry.location.lat;
+						var lng = json.results[0].geometry.location.lng;
+						
+						var totalUsers = parseInt(user._10_15) + parseInt(user._15_20) + parseInt(user._20_25) + parseInt(user._25_30) + parseInt(user._30_35) + parseInt(user._35_40) + parseInt(user._40_45) + parseInt(user._45_50) + parseInt(user._50_55) + parseInt(user._55_60) + parseInt(user._60_65);
+						console.log("total:" + totalUsers);
+
+						var circle = L.circle([lat, lng], {
+						    color: 'blue',
+						    fillColor: '#f03',
+						    fillOpacity: 0.5,
+						    radius: 1500
+						}).addTo(map);
+						
+						
+					}
+				}
+			});		
+			
+		}
+		
+	}	
+	
 	
 	
 }
