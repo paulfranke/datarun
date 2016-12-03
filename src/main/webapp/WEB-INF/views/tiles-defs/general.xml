@@ -25,5 +25,5 @@
 	<definition name="map" extends="baseLayout">
 	 	<put-attribute name="content" value="/WEB-INF/views/map/demo.jsp"/>
 	</definition>	 
-   
+	
 </tiles-definitions>
