@@ -498,6 +498,7 @@ function initmap() {
 	setTimeout(function(){ addCycleTour("suedspange", '#F1948A'); }, 2000);
 	setTimeout(function(){ addCycleTour("teltow", '#943126'); }, 2000);
 	
+	
 	function addCycleTour( _name, _fillColor ){
 		
 		$.ajax({
@@ -572,8 +573,29 @@ function initmap() {
 	
 
 	  $( function() {
-		    $( "#datepicker" ).datepicker();
-	  } );
+		    $( "#datepicker" ).datepicker({ dateFormat: 'dd.mm.yy', defaultDate: new Date('01.11.2015') });
+	   });
+	  
+	  
+	  function startVideo(){
+		  
+		  var inpDate = $("#datepicker").val();
+		  var year = inpDate.substring(6,10);
+		  var month = parseInt(inpDate.substring(3,5)) - 1;
+		  var day = inpDate.substring(0,2);
+		  var date = new Date( year, month, day );
+		  
+		  for(var i=0;i<2;i++){
+			  date.setDate(date.getDate() + 1);
+			  var newDate = ("0" + (date.getDate() )).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear();
+			  
+			  setTimeout(function(){ readInOut( newDate ) }, 1000);
+			  
+			  
+		  }
+	  }
+	  
+	  $(document).on("click", "#jsBtnStart", startVideo)
 	
 }
 
