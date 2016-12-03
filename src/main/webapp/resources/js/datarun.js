@@ -535,7 +535,7 @@ function initmap() {
 	
 
 	//readInOut();
-	function readInOut( date ){
+	function readInOut( dateArr ){
 		
 		$.ajax({
 			url : 'http://localhost:8080/datarun/resources/data/BikeInOut.json',
@@ -553,21 +553,24 @@ function initmap() {
 				console.log("Error %o", e);
 			},
 			success: function( json ){
-				console.log(" %o", json);
-				return false;
-				console.log("aslkdjfbb");
-				for(var i = 0;i < json.length; i++){
-					console.log("jsondate " + json[i].date);
-					console.log("    date " + date);
-					if(json[i].date == (date)){
-						console.log("XOXOX" + i)
-						
-						var stationLat = json[i].LAT;
-						var stationLng = json[i].LON;
-						var stationDiff = json[i].diff;
-						
-						console.log("DATE: " + date + " Diff: " + stationDiff)
-					}
+
+				for(var i=0;i<dateArr.length;i++){
+
+					setTimeout(function(){  
+
+						for(var j = 0;j < json.length; j++){
+							if(json[j].date == dateArr[i]){
+								var stationLat = json[i].LAT;
+								var stationLng = json[i].LON;
+								var stationDiff = json[i].diff;
+								
+								console.log("DATE: " + dateArr[i] + " Diff: " + stationDiff)
+							}
+						}
+
+					 
+					 }, 1200);
+					
 				}
 			}
 		});				
@@ -582,22 +585,24 @@ function initmap() {
 	  
 	  function startVideo(){
 		  
+		  var dateArr = [];
+		  
 		  var inpDate = $("#datepicker").val();
 		  var year = inpDate.substring(6,10);
 		  var month = parseInt(inpDate.substring(3,5)) - 1;
 		  var day = inpDate.substring(0,2);
 		  var date = new Date( year, month, day );
 		  
-		  for(var i=0;i<2;i++){
+		  for(var i=0;i<30;i++){
 			  date.setDate(date.getDate() + 1);
 			  var newDate = date.getFullYear() + "-" 
 			  			  + ("0" + (date.getMonth() + 1)).slice(-2) + "-" 
 			  		      + ("0" + (date.getDate() )).slice(-2);
 			  
-			  setTimeout(function(){ readInOut( newDate ) }, 1000);
-			  
-			  
+			  dateArr.push( newDate);
 		  }
+		  
+		  readInOut(dateArr)
 	  }
 	  
 	  $(document).on("click", "#jsBtnStart", startVideo)
