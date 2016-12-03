@@ -23,15 +23,15 @@ function initmap() {
 	
 	
 	// start the map in South-East England
-	map.setView(new L.LatLng(52.5, 13.3),12);
+	map.setView(new L.LatLng(52.521918, 13.413215),13);
 	map.addLayer(osm);
 	
-	var circle = L.circle([51.508, -0.11], {
-	    color: 'red',
-	    fillColor: '#f03',
-	    fillOpacity: 0.5,
-	    radius: 500
-	}).addTo(map);
+//	var circle = L.circle([51.508, -0.11], {
+//	    color: 'red',
+//	    fillColor: '#f03',
+//	    fillOpacity: 0.5,
+//	    radius: 500
+//	}).addTo(map);
 	
 	
 //	//railway station markers
@@ -104,7 +104,7 @@ function initmap() {
 //
 //		
 //		$.ajax({
-//			url : 'http://localhost:8080/datarun/resources/data/railwayStationNodes.geojson',
+//			url : 'http://172.16.41.174:8080/datarun/resources/data/railwayStationNodes.geojson',
 //			type: "GET",
 //			dataType: "json",
 //			beforeSend: function(){
@@ -179,7 +179,7 @@ function initmap() {
 //		var alreadyAddedStation = [];
 //
 //		$.ajax({
-//			url : 'http://localhost:8080/datarun/resources/data/railwayLines.geojson',
+//			url : 'http://172.16.41.174:8080/datarun/resources/data/railwayLines.geojson',
 //			type: "GET",
 //			dataType: "json",
 //			beforeSend: function(){
@@ -285,14 +285,15 @@ function initmap() {
 	
 	$("#jsBtnSearch").on("click", getGeoCodeByAdress)
 
+	var stationMarkers = [];
+	
 	addStations();
 	
-
-	
+		
 	function addStations(){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/BikeStationen.json',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/BikeStationen.json',
 			type: "GET",
 			dataType: "json",
 			beforeSend: function(){
@@ -313,6 +314,9 @@ function initmap() {
 						var stationName = json[i].ZONE;
 						
 						var marker = L.marker([lng, lat]).bindPopup( stationName ).addTo(map);
+						marker._icon.id = lat;
+
+						stationMarkers[lat] = marker
 					}
 				}
 	
@@ -325,7 +329,7 @@ function initmap() {
 	function addUsers( districtGeoJson, userAges ){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/berlin_user.json',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/berlin_user.json',
 			type: "GET",
 			dataType: "json",
 			beforeSend: function(){
@@ -448,7 +452,7 @@ function initmap() {
 		// obj = {"district":user.district,"users":totalUsers,"lat":lat,"lng":lng}
 
 			$.ajax({
-				url : 'http://localhost:8080/datarun/resources/data/berlin_district.geojson',
+				url : 'http://172.16.41.174:8080/datarun/resources/data/berlin_district.geojson',
 				type: "GET",
 				dataType: "json",
 				data:{
@@ -502,7 +506,7 @@ function initmap() {
 	function addCycleTour( _name, _fillColor ){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/radtour_' + _name + '.geojson',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/radtour_' + _name + '.geojson',
 			type: "GET",
 			dataType: "json",
 			data:{
@@ -534,11 +538,15 @@ function initmap() {
 	}
 	
 
+	var json = "";
+	var i=0;
+	var dateArr = [];
+	
 	//readInOut();
 	function readInOut( dateArr ){
 		
 		$.ajax({
-			url : 'http://localhost:8080/datarun/resources/data/BikeInOut.json',
+			url : 'http://172.16.41.174:8080/datarun/resources/data/BikeInOut.json',
 			type: "GET",
 			dataType: "json",
 			data:{
@@ -552,29 +560,90 @@ function initmap() {
 			error: function(e){
 				console.log("Error %o", e);
 			},
-			success: function( json ){
-
-				for(var i=0;i<dateArr.length;i++){
-
-					setTimeout(function(){  
-
-						for(var j = 0;j < json.length; j++){
-							if(json[j].date == dateArr[i]){
-								var stationLat = json[i].LAT;
-								var stationLng = json[i].LON;
-								var stationDiff = json[i].diff;
-								
-								console.log("DATE: " + dateArr[i] + " Diff: " + stationDiff)
-							}
-						}
-
-					 
-					 }, 1200);
-					
-				}
+			success: function( _json ){
+				
+				json = _json
+//				for(var i=0;i<dateArr.length;i++){
+//					
+//				}
+				callme();
+				
 			}
 		});				
 		
+	}
+
+	
+	function callme( ){
+
+		console.log("CALL ME")
+		if(i == 30){
+			return false;
+		}
+
+		$("#jsCurrentDate").html( dateArr[i] );
+		
+		for(var j = 0;j < json.length; j++){
+			if(json[j].date == dateArr[i]){
+				var stationLat = json[j].LAT.replace(",",".");
+				var stationLng = json[j].LON.replace(",",".");
+				var stationDiff = json[j].diff;
+				var stationDep = json[j].count_departures;
+				
+				if(jQuery.inArray( stationLat, stationMarkers )){
+					stationMarkers[stationLat].remove();
+					delete stationMarkers[ stationLat ];
+					
+					var marker = L.marker([stationLng, stationLat]).addTo(map);
+					if(stationDep > 0){
+						
+						var color = "#F6CED8";
+						if(stationDep < 5){
+							color = "#F6CED8";	
+						}else if(stationDep < 10){
+							color = "#FE2E64";	
+						}else if(stationDep < 20){
+							color = "#DF013A";	
+						}else{
+							color = "##8A0829";	
+						}
+						
+						marker.valueOf()._icon.style.backgroundColor = color;
+					}else{
+						marker.valueOf()._icon.style.backgroundColor = '';
+					}
+					stationMarkers[stationLat] = marker
+					
+				}
+				
+				
+//				for(var i=1; i<stationMarkers.length; i++){
+//					if(stationMarkers[i]._latlng.lng == stationLng){
+//						stationMarkers[i].remove();
+//
+//						var marker = L.marker([stationLng, stationLat]).addTo(map);
+//						marker.valueOf()._icon.style.backgroundColor = 'red'
+//							
+//						stationMarkers[stationLat] = marker
+//					
+//					}
+//				}
+
+
+//				console.log("LAT: " + stationLat )
+//				
+//				map.removeLayer(L.marker([stationLng, stationLat]).addTo(map));
+//				
+//				$("#" + stationLat).remove();
+//				console.log(" REMOVE ")
+
+				
+			}
+		}
+		
+		i++
+	    
+	    setTimeout(callme, 1100);
 	}
 	
 
@@ -584,8 +653,6 @@ function initmap() {
 	  
 	  
 	  function startVideo(){
-		  
-		  var dateArr = [];
 		  
 		  var inpDate = $("#datepicker").val();
 		  var year = inpDate.substring(6,10);
