@@ -53,6 +53,9 @@
 			  	<input type="checkbox" class="jsUserAge" value="_55_60" /> 55-60
 		</label>						
 		
+		<p>Date: <input type="text" id="datepicker"></p>
+		
+		
 	</div>
 	
 </div>

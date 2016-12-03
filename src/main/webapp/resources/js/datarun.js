@@ -532,6 +532,49 @@ function initmap() {
 		
 	}
 	
+
+	//readInOut();
+	function readInOut( date ){
+		
+		$.ajax({
+			url : 'http://localhost:8080/datarun/resources/data/inOut.json',
+			type: "GET",
+			dataType: "json",
+			data:{
+			},
+			beforeSend: function(){
+
+			},
+			complete: function(){
+				
+			},	
+			error: function(e){
+				console.log("Error %o", e);
+			},
+			success: function( json ){
+				
+				if(typeof json == 'object'){
+					for(var i=0;i<json.inOut.length;i++){
+						if(json.inOut[i].date == date){
+							
+							var stationLat = jsonInOut[i].lat;
+							var stationLng = jsonInOut[i].lng;
+							var stationDiff = jsonInOut[i].diff;
+							
+							console.log("DATE: " + date + " Diff: " + stationDiff)
+						}
+					}
+				}
+			}
+		});				
+		
+	}
+	
+
+	  $( function() {
+		    $( "#datepicker" ).datepicker();
+	  } );
+	
 }
 
 
