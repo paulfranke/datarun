@@ -281,5 +281,42 @@ function initmap() {
 	}
 	
 	$("#jsBtnSearch").on("click", getGeoCodeByAdress)
+
+	addStations();
+	
+	function addStations(){
+		
+		var alreadyAddedStation = [];
+	
+		$.ajax({
+			url : 'http://localhost:8080/datarun/resources/data/BikeStationen.json',
+			type: "GET",
+			dataType: "json",
+			beforeSend: function(){
+				$("#jsProgressBar").css("width", '10%');
+			},
+			complete: function(){
+	
+			},	
+			error: function(e){
+				console.log("Error %o", e);
+			},
+			success: function( json ){
+
+				for(var i=0;i<json.length;i++){
+					if(json[i].GROUP == "J"){
+						var lat = json[i].LAT.replace(",",".");;
+						var lng = json[i].LON.replace(",",".");
+						var stationName = json[i].ZONE;
+						
+						var marker = L.marker([lng, lat]).bindPopup( stationName ).addTo(map);
+					}
+				}
+	
+			}
+		});		
+	
+	}
+	
 	
 }
