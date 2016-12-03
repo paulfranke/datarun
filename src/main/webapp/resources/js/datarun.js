@@ -33,6 +33,22 @@ function initmap() {
 //	    radius: 500
 //	}).addTo(map);
 	
+	var LeafIcon = L.Icon.extend({
+	    options: {
+	        shadowUrl: '',
+	        iconSize:     [24, 24],
+	        shadowSize:   [24, 24],
+	        iconAnchor:   [12, 24],
+	        shadowAnchor: [0, 0],
+	        popupAnchor:  [0, -0]
+	    }
+	});
+	
+	var blueIcon = new LeafIcon({iconUrl: 'http://localhost:8080/datarun/resources/data/icon_blue.png'}),
+		redIcon = new LeafIcon({iconUrl: 'http://localhost:8080/datarun/resources/data/icon_red.png'}),
+		yellowIcon = new LeafIcon({iconUrl: 'http://localhost:8080/datarun/resources/data/icon_yellow.png'}),
+		orangeIcon = new LeafIcon({iconUrl: 'http://localhost:8080/datarun/resources/data/icon_orange.png'}),
+		deepOrangeIcon = new LeafIcon({iconUrl: 'http://localhost:8080/datarun/resources/data/icon_deepOrange.png'});
 	
 //	//railway station markers
 //	var iconSize = '16,16'
@@ -104,7 +120,7 @@ function initmap() {
 //
 //		
 //		$.ajax({
-//			url : 'http://172.16.41.174:8080/datarun/resources/data/railwayStationNodes.geojson',
+//			url : 'http://localhost:8080/datarun/resources/data/railwayStationNodes.geojson',
 //			type: "GET",
 //			dataType: "json",
 //			beforeSend: function(){
@@ -179,7 +195,7 @@ function initmap() {
 //		var alreadyAddedStation = [];
 //
 //		$.ajax({
-//			url : 'http://172.16.41.174:8080/datarun/resources/data/railwayLines.geojson',
+//			url : 'http://localhost:8080/datarun/resources/data/railwayLines.geojson',
 //			type: "GET",
 //			dataType: "json",
 //			beforeSend: function(){
@@ -293,7 +309,7 @@ function initmap() {
 	function addStations(){
 		
 		$.ajax({
-			url : 'http://172.16.41.174:8080/datarun/resources/data/BikeStationen.json',
+			url : 'http://localhost:8080/datarun/resources/data/BikeStationen.json',
 			type: "GET",
 			dataType: "json",
 			beforeSend: function(){
@@ -312,8 +328,10 @@ function initmap() {
 						var lat = json[i].LAT.replace(",",".");;
 						var lng = json[i].LON.replace(",",".");
 						var stationName = json[i].ZONE;
+						console.log("xoxox");
+						console.log(" %o", blueIcon);
 						
-						var marker = L.marker([lng, lat]).bindPopup( stationName ).addTo(map);
+						var marker = L.marker([lng, lat], {icon: blueIcon}).bindPopup( stationName ).addTo(map);
 						marker._icon.id = lat;
 
 						stationMarkers[lat] = marker
@@ -329,7 +347,7 @@ function initmap() {
 	function addUsers( districtGeoJson, userAges ){
 		
 		$.ajax({
-			url : 'http://172.16.41.174:8080/datarun/resources/data/berlin_user.json',
+			url : 'http://localhost:8080/datarun/resources/data/berlin_user.json',
 			type: "GET",
 			dataType: "json",
 			beforeSend: function(){
@@ -452,7 +470,7 @@ function initmap() {
 		// obj = {"district":user.district,"users":totalUsers,"lat":lat,"lng":lng}
 
 			$.ajax({
-				url : 'http://172.16.41.174:8080/datarun/resources/data/berlin_district.geojson',
+				url : 'http://localhost:8080/datarun/resources/data/berlin_district.geojson',
 				type: "GET",
 				dataType: "json",
 				data:{
@@ -506,7 +524,8 @@ function initmap() {
 	function addCycleTour( _name, _fillColor ){
 		
 		$.ajax({
-			url : 'http://172.16.41.174:8080/datarun/resources/data/radtour_' + _name + '.geojson',
+//			url : 'http://localhost:8080/datarun/resources/data/radtour_' + _name + '.geojson',
+			url : 'http://localhost:8080/datarun/resources/data/radtour_' + _name + '.geojson',
 			type: "GET",
 			dataType: "json",
 			data:{
@@ -546,7 +565,7 @@ function initmap() {
 	function readInOut( dateArr ){
 		
 		$.ajax({
-			url : 'http://172.16.41.174:8080/datarun/resources/data/BikeInOut.json',
+			url : 'http://localhost:8080/datarun/resources/data/BikeInOut.json',
 			type: "GET",
 			dataType: "json",
 			data:{
@@ -594,23 +613,24 @@ function initmap() {
 					stationMarkers[stationLat].remove();
 					delete stationMarkers[ stationLat ];
 					
-					var marker = L.marker([stationLng, stationLat]).addTo(map);
 					if(stationDep > 0){
 						
-						var color = "#F6CED8";
+						var color = blueIcon;
 						if(stationDep < 5){
-							color = "#F6CED8";	
+							color = yellowIcon;	
 						}else if(stationDep < 10){
-							color = "#FE2E64";	
+							color = orangeIcon;	
 						}else if(stationDep < 20){
-							color = "#DF013A";	
+							color = deepOrangeIcon;	
+						}else if(stationDep < 30){
+							color = redIcon;	
 						}else{
-							color = "##8A0829";	
+							color = deepRedIcon;
 						}
 						
-						marker.valueOf()._icon.style.backgroundColor = color;
+						var marker = L.marker([stationLng, stationLat], {icon: color}).addTo(map);
 					}else{
-						marker.valueOf()._icon.style.backgroundColor = '';
+						var marker = L.marker([stationLng, stationLat], {icon: blueIcon}).addTo(map);
 					}
 					stationMarkers[stationLat] = marker
 					

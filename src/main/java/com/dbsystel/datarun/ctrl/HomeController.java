@@ -39,7 +39,7 @@ public class HomeController {
 	public String convert(Locale locale, Model model, @RequestParam(value = "path", required = true) String _path) {
 		
 		csvTojsonConverter x = new csvTojsonConverter();
-		x.createBikejson(_path);
+//		x.createBikejson(_path);
 		logger.info("data run");
 		
 		return "nodeCreate";
